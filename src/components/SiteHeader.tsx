@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { NAV, SITE } from "@/lib/site";
+import { NAV } from "@/lib/site";
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -12,13 +13,15 @@ export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-brand-rule bg-brand-paper/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-navy text-[10px] font-semibold tracking-widest text-white">
-            MCF
-          </span>
-          <span className="font-display text-lg font-semibold tracking-tight">
-            {SITE.name}
-          </span>
+        <Link href="/" className="flex items-center" aria-label="Midcoast Food — home">
+          <Image
+            src="/logo.avif"
+            alt="Midcoast Food"
+            width={893}
+            height={327}
+            priority
+            className="h-8 w-auto sm:h-9"
+          />
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {NAV.map((item) => {

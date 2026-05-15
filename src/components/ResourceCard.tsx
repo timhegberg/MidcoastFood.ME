@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Resource } from "@/lib/types";
 import { CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/types";
+import CategoryIcon from "@/components/CategoryIcon";
 
 type Props = {
   resource: Resource;
@@ -30,15 +31,12 @@ export default function ResourceCard({
       }`}
     >
       <div className="flex gap-4">
-        <div
-          className="grid h-14 w-14 shrink-0 place-items-center rounded-xl text-white"
-          style={{ background: CATEGORY_COLOR[r.category] }}
-          aria-hidden
-        >
-          <span className="font-display text-xl font-semibold">
-            {r.name[0]}
-          </span>
-        </div>
+        <CategoryIcon
+          category={r.category}
+          size={56}
+          rounded="xl"
+          className="shrink-0"
+        />
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <h3 className="truncate font-display text-base font-semibold leading-tight">

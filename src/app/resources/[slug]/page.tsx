@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import DetailMap from "@/components/DetailMap";
+import CategoryIcon from "@/components/CategoryIcon";
 import { resources, getResource } from "@/lib/resources";
 import {
   AMENITY_LABEL,
@@ -50,7 +51,14 @@ export default async function ResourceDetailPage({ params }: { params: Params })
       </Link>
 
       <header className="mt-3 flex flex-wrap items-start justify-between gap-4">
-        <div>
+        <div className="flex gap-4">
+          <CategoryIcon
+            category={r.category}
+            size={64}
+            rounded="xl"
+            className="hidden shrink-0 sm:block"
+          />
+          <div>
           <div className="flex flex-wrap items-center gap-2">
             <span
               className="rounded-full px-2.5 py-0.5 text-xs font-medium text-white"
@@ -82,6 +90,7 @@ export default async function ResourceDetailPage({ params }: { params: Params })
             {[r.address, r.city, r.state, r.zip].filter(Boolean).join(", ")}
             {r.county && ` · ${r.county} County`}
           </p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           {r.phone && (

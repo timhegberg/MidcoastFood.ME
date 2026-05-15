@@ -99,6 +99,18 @@ export const CATEGORY_BLURB: Record<Category, string> = {
   Other: "Other resources",
 };
 
+// Brand category icons live in /public/icons. "Other" has no icon — callers
+// fall back to a colored monogram chip.
+export const CATEGORY_ICON: Record<Category, string | null> = {
+  Government: "/icons/government.avif",
+  Community: "/icons/community.avif",
+  WCB: "/icons/wcb.avif",
+  LFFP: "/icons/lffp.avif",
+  Religious: "/icons/religious.avif",
+  Business: "/icons/business.avif",
+  Other: null,
+};
+
 export const CATEGORY_COLOR: Record<Category, string> = {
   Government: "#5B6B82",
   Community: "#2F6F4E",

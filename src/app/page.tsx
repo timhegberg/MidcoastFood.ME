@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { resources } from "@/lib/resources";
 import { CATEGORIES, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/types";
+import CategoryIcon from "@/components/CategoryIcon";
 
 const towns = new Set(resources.map((r) => r.city).filter(Boolean));
 const verifiedCount = resources.filter(
@@ -130,8 +131,15 @@ export default function HomePage() {
                   className="rounded-2xl p-5 text-white shadow-card transition hover:-translate-y-0.5 hover:shadow-cardHover"
                   style={{ background: CATEGORY_COLOR[c] }}
                 >
-                  <div className="font-display text-3xl font-semibold">
-                    {count}
+                  <div className="flex items-start justify-between">
+                    <div className="font-display text-3xl font-semibold">
+                      {count}
+                    </div>
+                    <CategoryIcon
+                      category={c}
+                      size={36}
+                      className="ring-2 ring-white/40"
+                    />
                   </div>
                   <div className="mt-1 text-sm opacity-90">
                     {CATEGORY_LABEL[c]}

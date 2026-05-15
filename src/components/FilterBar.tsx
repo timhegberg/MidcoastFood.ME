@@ -1,7 +1,8 @@
 "use client";
 
-import { CATEGORIES, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/types";
+import { CATEGORIES, CATEGORY_LABEL } from "@/lib/types";
 import type { Category } from "@/lib/types";
+import CategoryIcon from "@/components/CategoryIcon";
 
 export type Filters = {
   query: string;
@@ -136,12 +137,7 @@ export default function FilterBar({
                     : "border-transparent text-brand-ink/60 hover:text-brand-ink"
                 }`}
               >
-                <span
-                  className="grid h-7 w-7 place-items-center rounded-full text-[10px] font-bold text-white"
-                  style={{ background: CATEGORY_COLOR[c] }}
-                >
-                  {c[0]}
-                </span>
+                <CategoryIcon category={c} size={28} />
                 <span className="whitespace-nowrap">
                   {CATEGORY_LABEL[c].replace(" / ", "/")}
                 </span>
