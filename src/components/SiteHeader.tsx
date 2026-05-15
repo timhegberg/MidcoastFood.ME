@@ -1,0 +1,88 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { NAV, SITE } from "@/lib/site";
+
+export default function SiteHeader() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-brand-rule bg-brand-paper/90 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-navy text-[10px] font-semibold tracking-widest text-white">
+            MCF
+          </span>
+          <span className="font-display text-lg font-semibold tracking-tight">
+            {SITE.name}
+          </span>
+        </Link>
+        <nav className="hidden items-center gap-1 md:flex">
+          {NAV.map((item) => {
+            const active = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                  active
+                    ? "bg-brand-cream text-brand-ink"
+                    : "text-brand-ink/75 hover:bg-brand-cream hover:text-brand-ink"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          <Link
+            href="/forms/list-your-resource"
+            className="ml-1 rounded-full bg-brand-navy px-3.5 py-1.5 text-sm font-medium text-white hover:bg-brand-navy/90"
+          >
+            List a resource
+          </Link>
+        </nav>
+
+        <button
+          type="button"
+          aria-label="Open menu"
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          className="grid h-9 w-9 place-items-center rounded-full border border-brand-rule md:hidden"
+        >
+          <span aria-hidden className="block">
+            <span className="block h-0.5 w-4 bg-brand-ink" />
+            <span className="mt-1 block h-0.5 w-4 bg-brand-ink" />
+            <span className="mt-1 block h-0.5 w-4 bg-brand-ink" />
+          </span>
+        </button>
+      </div>
+
+      {open && (
+        <div className="border-t border-brand-rule bg-brand-paper md:hidden">
+          <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
+            {NAV.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-brand-cream"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <Link
+              href="/forms/list-your-resource"
+              onClick={() => setOpen(false)}
+              className="mt-1 rounded-lg bg-brand-navy px-3 py-2 text-sm font-medium text-white"
+            >
+              List a resource
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}

@@ -1,0 +1,37 @@
+{
+  "counties": [
+    "Androscoggin",
+    "Aroostook",
+    "Cumberland",
+    "Franklin",
+    "Hancock",
+    "Kennebec",
+    "Knox",
+    "Lincoln",
+    "Oxford",
+    "Penobscot",
+    "Piscataquis",
+    "Sagadahoc",
+    "Somerset",
+    "Waldo",
+    "Washington",
+    "York"
+  ],
+  "languages": [
+    "Arabic",
+    "English",
+    "French",
+    "Other",
+    "Spanish"
+  ],
+  "resourceTypes": [
+    "Community/Non-profit",
+    "County Food Pantry",
+    "Little Free Food Pantry",
+    "Local Business",
+    "Religious Food Pantry",
+    "Town Office Food Resources",
+    "Waldo County Bounty",
+    "Waldo County Bounty Partner"
+  ]
+}
