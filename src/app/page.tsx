@@ -135,11 +135,7 @@ export default function HomePage() {
                     <div className="font-display text-3xl font-semibold">
                       {count}
                     </div>
-                    <CategoryIcon
-                      category={c}
-                      size={36}
-                      className="ring-2 ring-white/40"
-                    />
+                    <CategoryIcon category={c} size={40} />
                   </div>
                   <div className="mt-1 text-sm opacity-90">
                     {CATEGORY_LABEL[c]}

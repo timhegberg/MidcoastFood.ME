@@ -43,7 +43,7 @@ export default function FilterBar({
   }
 
   return (
-    <div className="sticky top-16 z-30 border-b border-brand-rule bg-brand-paper/95 backdrop-blur">
+    <div className="relative z-30 shrink-0 border-b border-brand-rule bg-brand-paper">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Row 1: search + sort */}
         <div className="flex flex-wrap items-center gap-2 py-3">

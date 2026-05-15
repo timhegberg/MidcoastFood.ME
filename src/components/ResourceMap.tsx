@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Map as LeafletMap, Marker, CircleMarker } from "leaflet";
 import type { Resource } from "@/lib/types";
 import { CATEGORY_COLOR } from "@/lib/types";
@@ -13,6 +13,9 @@ type Props = {
   onHover: (slug: string | null) => void;
   userLocation: { lat: number; lng: number } | null;
 };
+
+// Whole-of-Maine fallback view, used until resources resolve.
+const MAINE_CENTER: [number, number] = [44.8, -69.4];
 
 function pinIcon(L: LeafletNs, color: string, active = false) {
   const size = active ? 36 : 28;
@@ -43,22 +46,46 @@ export default function ResourceMap({
   const userMarkerRef = useRef<CircleMarker | null>(null);
   const [ready, setReady] = useState(false);
 
-  const initialCenter: [number, number] = useMemo(() => {
-    if (resources.length === 0) return [44.5, -69.5];
-    const lat = resources.reduce((s, r) => s + r.lat, 0) / resources.length;
-    const lng = resources.reduce((s, r) => s + r.lng, 0) / resources.length;
-    return [lat, lng];
-  }, [resources]);
+  // Latest props mirrored into refs so the ResizeObserver callback — which is
+  // created once — can always re-fit against current data.
+  const resourcesRef = useRef(resources);
+  const userLocationRef = useRef(userLocation);
+  resourcesRef.current = resources;
+  userLocationRef.current = userLocation;
 
+  // Re-fit the viewport to the current resource set. Leaflet computes the fit
+  // from the container's pixel size, so this must run only after the container
+  // has a real size (see the ResizeObserver below).
+  function fitToResources() {
+    const map = mapRef.current;
+    const L = leafletRef.current;
+    if (!map || !L) return;
+    const rs = resourcesRef.current;
+    const points: [number, number][] = rs.map((r) => [r.lat, r.lng]);
+    const loc = userLocationRef.current;
+    if (loc) points.push([loc.lat, loc.lng]);
+    if (points.length === 0) {
+      map.setView(MAINE_CENTER, 7);
+      return;
+    }
+    const bounds = L.latLngBounds(points);
+    map.fitBounds(bounds, { padding: [48, 48], maxZoom: 13 });
+  }
+
+  // Init map once. A ResizeObserver keeps Leaflet's internal size in sync with
+  // the container — fixing the "map centered on the wrong region" bug that
+  // happens when fitBounds runs before the flex/grid layout has sized the pane.
   useEffect(() => {
     let cancelled = false;
+    let observer: ResizeObserver | null = null;
+
     (async () => {
       const L = (await import("leaflet")).default;
       if (cancelled || !containerRef.current || mapRef.current) return;
       leafletRef.current = L;
       const map = L.map(containerRef.current, {
-        center: initialCenter,
-        zoom: 8,
+        center: MAINE_CENTER,
+        zoom: 7,
         zoomControl: true,
         attributionControl: true,
       });
@@ -72,9 +99,27 @@ export default function ResourceMap({
       ).addTo(map);
       mapRef.current = map;
       setReady(true);
+
+      // When the container's box changes (initial layout, window resize,
+      // sidebar toggling), tell Leaflet and re-fit so the view stays correct.
+      let firstFitDone = false;
+      observer = new ResizeObserver(() => {
+        const m = mapRef.current;
+        if (!m) return;
+        const { width, height } = containerRef.current!.getBoundingClientRect();
+        if (width === 0 || height === 0) return;
+        m.invalidateSize({ animate: false });
+        if (!firstFitDone) {
+          firstFitDone = true;
+          fitToResources();
+        }
+      });
+      observer.observe(containerRef.current);
     })();
+
     return () => {
       cancelled = true;
+      observer?.disconnect();
       mapRef.current?.remove();
       mapRef.current = null;
       markersRef.current.clear();
@@ -82,7 +127,7 @@ export default function ResourceMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sync markers
+  // Sync markers with the filtered resource set, then re-fit.
   useEffect(() => {
     const map = mapRef.current;
     const L = leafletRef.current;
@@ -92,9 +137,8 @@ export default function ResourceMap({
 
     for (const r of resources) {
       seen.add(r.slug);
-      let m = current.get(r.slug);
-      if (!m) {
-        m = L.marker([r.lat, r.lng], {
+      if (!current.has(r.slug)) {
+        const m = L.marker([r.lat, r.lng], {
           icon: pinIcon(L, CATEGORY_COLOR[r.category]),
         })
           .addTo(map)
@@ -116,11 +160,8 @@ export default function ResourceMap({
         current.delete(slug);
       }
     }
-    if (resources.length > 0) {
-      const bounds = L.latLngBounds(resources.map((r) => [r.lat, r.lng]));
-      if (userLocation) bounds.extend([userLocation.lat, userLocation.lng]);
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
-    }
+    fitToResources();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resources, onHover, userLocation, ready]);
 
   // Hover sync

@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
+import FooterGate from "@/components/FooterGate";
 
 export const metadata: Metadata = {
   title: "Midcoast Food — Find food near you in Maine",
@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col bg-brand-paper text-brand-ink">
         <SiteHeader />
         <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <FooterGate />
       </body>
     </html>
   );

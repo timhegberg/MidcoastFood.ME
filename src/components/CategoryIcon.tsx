@@ -2,8 +2,10 @@ import Image from "next/image";
 import type { Category } from "@/lib/types";
 import { CATEGORY_COLOR, CATEGORY_ICON, CATEGORY_LABEL } from "@/lib/types";
 
-// Renders the brand category icon. Falls back to a colored monogram for the
-// "Other" category, which has no artwork.
+// Renders the brand category icon on a white tile so the (transparent,
+// single-color) artwork stays legible on any surface — colored home tiles,
+// white cards, or the cream filter bar. Falls back to a colored monogram for
+// the "Other" category, which has no artwork.
 export default function CategoryIcon({
   category,
   size = 28,
@@ -17,12 +19,16 @@ export default function CategoryIcon({
 }) {
   const icon = CATEGORY_ICON[category];
   const radius =
-    rounded === "full" ? "rounded-full" : rounded === "xl" ? "rounded-xl" : "rounded-lg";
+    rounded === "full"
+      ? "rounded-full"
+      : rounded === "xl"
+        ? "rounded-xl"
+        : "rounded-lg";
 
   if (!icon) {
     return (
       <span
-        className={`grid place-items-center ${radius} font-bold text-white ${className}`}
+        className={`grid shrink-0 place-items-center ${radius} font-bold text-white ${className}`}
         style={{
           width: size,
           height: size,
@@ -36,14 +42,27 @@ export default function CategoryIcon({
     );
   }
 
+  const inset = Math.max(2, Math.round(size * 0.16));
+  const inner = size - inset * 2;
+
   return (
-    <Image
-      src={icon}
-      alt={`${CATEGORY_LABEL[category]} icon`}
-      width={size}
-      height={size}
-      className={`${radius} object-cover ${className}`}
-      style={{ width: size, height: size }}
-    />
+    <span
+      className={`inline-grid shrink-0 place-items-center bg-white ${radius} ${className}`}
+      style={{
+        width: size,
+        height: size,
+        // Inset ring in the category color — gives the tile definition on
+        // white cards and a crisp edge on colored backgrounds.
+        boxShadow: `inset 0 0 0 1.5px ${CATEGORY_COLOR[category]}`,
+      }}
+    >
+      <Image
+        src={icon}
+        alt={`${CATEGORY_LABEL[category]} icon`}
+        width={inner}
+        height={inner}
+        style={{ width: inner, height: inner }}
+      />
+    </span>
   );
 }

@@ -106,7 +106,7 @@ export default function ResourceDirectory() {
   }, []);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
+    <div className="flex h-[calc(100dvh-4rem)] flex-col overflow-hidden">
       <FilterBar
         filters={filters}
         setFilters={setFilters}
@@ -116,8 +116,8 @@ export default function ResourceDirectory() {
         shown={filtered.length}
         geoState={geoState}
       />
-      <div className="grid flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-        <section className="overflow-y-auto px-4 pb-12 pt-4 sm:px-6">
+      <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <section className="min-h-0 overflow-y-auto px-4 pb-12 pt-4 sm:px-6">
           <div className="mx-auto grid max-w-3xl gap-3">
             {filtered.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-brand-rule bg-white p-10 text-center">
@@ -148,7 +148,7 @@ export default function ResourceDirectory() {
             )}
           </div>
         </section>
-        <aside className="relative hidden lg:block">
+        <aside className="relative hidden min-h-0 lg:block">
           <div className="absolute inset-0">
             <ResourceMap
               resources={filtered}
