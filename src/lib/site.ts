@@ -5,8 +5,8 @@
 export const SITE = {
   name: "Midcoast Food",
   domain: "midcoastfood.me",
-  version: "v1.1",
-  versionTag: "Rockland — Rising Tide",
+  version: "v2.0",
+  versionTag: "Belfast",
   tagline: "Find food near you.",
   mission:
     "Everyone deserves good food. We connect neighbors with free and local food resources across Maine.",

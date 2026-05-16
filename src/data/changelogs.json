@@ -1,5 +1,11 @@
 [
   {
+    "name": "v2.0 - Belfast",
+    "slug": "v2-0---belfast",
+    "publishedOn": "2026-05-16",
+    "changesHtml": "<p>MidcoastFood.ME has been rebuilt from the ground up. The site has been migrated off Webflow to a Next.js application hosted on Vercel, backed by a live database.</p><p>New interactive food directory: a side-by-side map and list with category chips, county and accessibility filters, fuzzy search across names, towns, and ZIP codes, and a \"use my location\" option that sorts resources by distance.</p><p>All 296 food resources now live in a database instead of a static file, so listings can be kept current.</p><p>Added volunteer and business accounts. Volunteers can add and edit any listing; businesses can create and maintain their own profile. Accounts use a username and password with recovery codes — no email required.</p><p>Every addition or edit now flows through a community review queue before it publishes. Approvers review submissions, manage volunteers, and handle password resets.</p><p>The correction form and business-listing form feed the review queue directly.</p><p>Added an interactive map location picker to the listing editor.</p><p>Refreshed the navigation and added brand category iconography throughout.</p>"
+  },
+  {
     "name": "v1.1 - Rising Tide",
     "slug": "v1-1---rising-tide",
     "publishedOn": "2025-11-11",
