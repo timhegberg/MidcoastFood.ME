@@ -8,13 +8,19 @@ export const dynamic = "force-dynamic";
 // signUpAction sets the session cookie, which triggers a router refresh — if
 // this page redirected on an active session, that refresh would navigate away
 // and destroy the one-time recovery-codes screen before the user saw it.
-export default function SignUpPage() {
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ role?: string }>;
+}) {
+  const { role } = await searchParams;
+  const defaultRole = role === "business" ? "business" : "volunteer";
   return (
     <AuthShell
       title="Create an account"
       subtitle="For volunteers keeping listings accurate and businesses sharing food. No email required."
     >
-      <SignUpForm />
+      <SignUpForm defaultRole={defaultRole} />
     </AuthShell>
   );
 }

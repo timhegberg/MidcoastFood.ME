@@ -8,33 +8,40 @@ export const metadata = {
     "Volunteer to verify listings, host a food drive, or partner with us. Every action makes the next neighbor's search easier.",
 };
 
-const WAYS = [
+type Cta = { href: string; label: string; primary?: boolean };
+type Way = { title: string; body: string; ctas: Cta[] };
+
+const WAYS: Way[] = [
   {
     title: "Volunteer",
     body:
       "Call pantries to verify hours, update addresses, transcribe info from physical bulletin boards. A few hours a week makes a huge difference.",
-    cta: {
-      href: "/signup",
-      label: "Create a Volunteer Account",
-    },
+    ctas: [{ href: "/signup", label: "Create a Volunteer Account" }],
   },
   {
     title: "Host a food drive",
     body:
       "Mobilize your workplace, school, or congregation to collect non-perishables for a local pantry. We'll help you connect with one that needs your help.",
-    cta: { href: "/share-your-resources", label: "Find a pantry" },
+    ctas: [{ href: "/share-your-resources", label: "Find a pantry" }],
   },
   {
     title: "Partner with us",
     body:
       "Restaurants, farms, co-ops, and businesses with food to share — list your program and reach the community directly.",
-    cta: { href: "/forms/list-your-business", label: "List your business" },
+    ctas: [
+      {
+        href: "/signup?role=business",
+        label: "Create a Business Account",
+        primary: true,
+      },
+      { href: "/forms/list-your-business", label: "List your business" },
+    ],
   },
   {
     title: "Submit a correction",
     body:
       "See something out of date? Pantry hours wrong? An address that's moved? Tell us and we'll update it within a few days.",
-    cta: { href: "/forms/submit-a-correction", label: "Send a correction" },
+    ctas: [{ href: "/forms/submit-a-correction", label: "Send a correction" }],
   },
 ];
 
@@ -56,12 +63,21 @@ export default function GetInvolvedPage() {
             >
               <h2 className="font-display text-xl font-semibold">{w.title}</h2>
               <p className="mt-2 flex-1 text-sm text-brand-ink/70">{w.body}</p>
-              <Link
-                href={w.cta.href}
-                className="mt-5 inline-flex w-fit rounded-full border border-brand-rule px-4 py-2 text-sm font-medium hover:bg-brand-cream"
-              >
-                {w.cta.label}
-              </Link>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {w.ctas.map((c) => (
+                  <Link
+                    key={c.href}
+                    href={c.href}
+                    className={
+                      c.primary
+                        ? "inline-flex w-fit rounded-full bg-brand-navy px-4 py-2 text-sm font-medium text-white hover:bg-brand-navy/90"
+                        : "inline-flex w-fit rounded-full border border-brand-rule px-4 py-2 text-sm font-medium hover:bg-brand-cream"
+                    }
+                  >
+                    {c.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           ))}
         </div>

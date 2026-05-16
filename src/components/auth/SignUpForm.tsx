@@ -8,9 +8,13 @@ import { signUpAction } from "@/lib/auth-actions";
 const INPUT =
   "w-full rounded-xl border border-brand-rule bg-white px-4 py-2.5 text-sm outline-none placeholder:text-brand-ink/40 focus:border-brand-navy focus:ring-2 focus:ring-brand-navy/15";
 
-export default function SignUpForm() {
+export default function SignUpForm({
+  defaultRole = "volunteer",
+}: {
+  defaultRole?: "volunteer" | "business";
+}) {
   const router = useRouter();
-  const [role, setRole] = useState<"volunteer" | "business">("volunteer");
+  const [role, setRole] = useState<"volunteer" | "business">(defaultRole);
   const [state, setState] = useState<"form" | "submitting" | "codes">("form");
   const [error, setError] = useState<string | null>(null);
   const [codes, setCodes] = useState<string[]>([]);
