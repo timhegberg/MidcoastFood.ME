@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import FilterBar, { Filters } from "@/components/FilterBar";
 import ResourceCard from "@/components/ResourceCard";
 import ResourceMap from "@/components/ResourceMap";
-import { resources, counties } from "@/lib/resources";
-import { type Category } from "@/lib/types";
+import { counties } from "@/lib/resources";
+import { type Category, type Resource } from "@/lib/types";
 import { distanceMi, makeFuse, search as fuseSearch } from "@/lib/search";
 
 const initialFilters: Filters = {
@@ -20,13 +20,17 @@ const initialFilters: Filters = {
   useLocation: false,
 };
 
-export default function ResourceDirectory() {
+export default function ResourceDirectory({
+  resources,
+}: {
+  resources: Resource[];
+}) {
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [hovered, setHovered] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [geoState, setGeoState] = useState<"off" | "asking" | "on" | "denied">("off");
 
-  const fuse = useMemo(() => makeFuse(resources), []);
+  const fuse = useMemo(() => makeFuse(resources), [resources]);
 
   // Geolocation flow
   useEffect(() => {
@@ -103,7 +107,7 @@ export default function ResourceDirectory() {
     };
     for (const r of resources) c[r.category]++;
     return c;
-  }, []);
+  }, [resources]);
 
   return (
     <div className="flex h-[calc(100dvh-4rem)] flex-col overflow-hidden">

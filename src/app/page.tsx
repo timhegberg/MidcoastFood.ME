@@ -1,12 +1,9 @@
 import Link from "next/link";
-import { resources } from "@/lib/resources";
+import { getPublishedResources } from "@/lib/db-resources";
 import { CATEGORIES, CATEGORY_COLOR, CATEGORY_LABEL } from "@/lib/types";
 import CategoryIcon from "@/components/CategoryIcon";
 
-const towns = new Set(resources.map((r) => r.city).filter(Boolean));
-const verifiedCount = resources.filter(
-  (r) => r.verifiedStatus === "Verified",
-).length;
+export const dynamic = "force-dynamic";
 
 const STEPS = [
   {
@@ -54,7 +51,13 @@ const PILLARS = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const resources = await getPublishedResources();
+  const towns = new Set(resources.map((r) => r.city).filter(Boolean));
+  const verifiedCount = resources.filter(
+    (r) => r.verifiedStatus === "Verified",
+  ).length;
+
   return (
     <>
       {/* Beta banner */}

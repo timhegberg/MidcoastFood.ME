@@ -23,6 +23,7 @@ export const NAV = [
   { href: "/share-your-resources", label: "Share" },
   { href: "/get-involved", label: "Get involved" },
   { href: "/about", label: "About" },
+  { href: "/account", label: "Account" },
 ] as const;
 
 export const FOOTER_LINKS = [

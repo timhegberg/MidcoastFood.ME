@@ -1,4 +1,5 @@
 import ResourceDirectory from "@/components/ResourceDirectory";
+import { getPublishedResources } from "@/lib/db-resources";
 
 export const metadata = {
   title: "Find food — Midcoast Food",
@@ -6,6 +7,10 @@ export const metadata = {
     "Search and filter food pantries, community fridges, soup kitchens, and meal programs across Maine.",
 };
 
-export default function ResourcesPage() {
-  return <ResourceDirectory />;
+// Listings change as volunteers edit and approvers publish — always read fresh.
+export const dynamic = "force-dynamic";
+
+export default async function ResourcesPage() {
+  const resources = await getPublishedResources();
+  return <ResourceDirectory resources={resources} />;
 }

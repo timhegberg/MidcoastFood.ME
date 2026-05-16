@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import DetailMap from "@/components/DetailMap";
 import CategoryIcon from "@/components/CategoryIcon";
-import { resources, getResource } from "@/lib/resources";
+import { getResourceBySlug } from "@/lib/db-resources";
 import {
   AMENITY_LABEL,
   CATEGORY_COLOR,
@@ -12,13 +12,11 @@ import {
 
 type Params = Promise<{ slug: string }>;
 
-export function generateStaticParams() {
-  return resources.map((r) => ({ slug: r.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
-  const r = getResource(slug);
+  const r = await getResourceBySlug(slug);
   if (!r) return {};
   return {
     title: `${r.name} — Midcoast Food`,
@@ -30,7 +28,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 export default async function ResourceDetailPage({ params }: { params: Params }) {
   const { slug } = await params;
-  const r = getResource(slug);
+  const r = await getResourceBySlug(slug);
   if (!r) notFound();
 
   const amenityRows = (Object.keys(r.amenities) as (keyof Amenities)[]).filter(

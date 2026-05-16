@@ -2,15 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageHero from "@/components/PageHero";
 import ResourceCard from "@/components/ResourceCard";
-import { resources, counties } from "@/lib/resources";
+import { counties } from "@/lib/resources";
+import { getPublishedResources } from "@/lib/db-resources";
+
+export const dynamic = "force-dynamic";
 
 // Slugify county names so /county/[slug] is canonical (e.g. "York" → "york").
 function slugify(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
-
-export function generateStaticParams() {
-  return counties.map((c) => ({ slug: slugify(c) }));
 }
 
 export async function generateMetadata({
@@ -35,7 +34,8 @@ export default async function CountyPage({
   const { slug } = await params;
   const county = counties.find((c) => slugify(c) === slug);
   if (!county) notFound();
-  const matches = resources
+  const all = await getPublishedResources();
+  const matches = all
     .filter((r) => r.county === county)
     .sort((a, b) => a.name.localeCompare(b.name));
 
