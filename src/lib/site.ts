@@ -5,8 +5,8 @@
 export const SITE = {
   name: "Midcoast Food",
   domain: "midcoastfood.me",
-  version: "v2.0",
-  versionTag: "Belfast",
+  version: "v2.1",
+  versionTag: "Rockweed",
   tagline: "Find food near you.",
   mission:
     "Everyone deserves good food. We connect neighbors with free and local food resources across Maine.",

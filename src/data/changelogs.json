@@ -1,5 +1,12 @@
 [
   {
+    "name": "v2.1 - Rockweed",
+    "slug": "v2-1---rockweed",
+    "publishedOn": "2026-05-16",
+    "beta": true,
+    "changesHtml": "<p>This is the beta release channel, live at beta.midcoastfood.me. New features and design changes are tested here with live data before they reach the main site.</p><p>As work lands in the beta, it will be listed here. When v2.1 is ready it will be promoted to the main site and this entry will leave beta.</p>"
+  },
+  {
     "name": "v2.0 - Belfast",
     "slug": "v2-0---belfast",
     "publishedOn": "2026-05-16",
