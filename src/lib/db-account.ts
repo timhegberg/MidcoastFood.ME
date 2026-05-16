@@ -27,7 +27,8 @@ export async function getPendingSubmissions() {
       resourceSlug: resources.slug,
     })
     .from(submissions)
-    .innerJoin(users, eq(submissions.submittedBy, users.id))
+    // leftJoin — anonymous public submissions have no submittedBy user.
+    .leftJoin(users, eq(submissions.submittedBy, users.id))
     .leftJoin(resources, eq(submissions.resourceId, resources.id))
     .where(eq(submissions.status, "pending"))
     .orderBy(desc(submissions.createdAt));

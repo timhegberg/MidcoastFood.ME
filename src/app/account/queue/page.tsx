@@ -34,6 +34,7 @@ export default async function ReviewQueuePage() {
               payload={row.submission.payload}
               submitter={row.submitterDisplayName || row.submitterUsername}
               submitterRole={row.submission.submitterRole}
+              submitterContact={row.submission.submitterContact}
               createdAt={row.submission.createdAt.toISOString()}
               resourceSlug={row.resourceSlug}
             />

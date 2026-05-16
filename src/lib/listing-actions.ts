@@ -184,7 +184,22 @@ export async function approveSubmissionAction(fd: FormData): Promise<Result> {
     return { ok: false, error: "This submission was already reviewed." };
   }
 
-  const p = sub.payload;
+  // Corrections are free-text reports — there's nothing to publish.
+  // "Approving" one just marks it resolved (the approver fixes the listing
+  // separately via the editor if needed).
+  if (sub.kind === "correction") {
+    await db
+      .update(submissions)
+      .set({
+        status: "approved",
+        reviewedBy: approver.id,
+        reviewedAt: new Date(),
+      })
+      .where(eq(submissions.id, id));
+    return { ok: true };
+  }
+
+  const p = sub.payload as ResourcePayload;
 
   if (sub.kind === "new") {
     await db.insert(resources).values({

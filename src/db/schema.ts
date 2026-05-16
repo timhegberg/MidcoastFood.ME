@@ -136,13 +136,15 @@ export const resources = pgTable(
 // Every volunteer edit/addition and every business profile lands here as a
 // pending submission. An approver applies or rejects it.
 
-export const SUBMISSION_KINDS = ["new", "edit"] as const;
+// "new"/"edit" carry a ResourcePayload; "correction" carries a CorrectionPayload
+// (a free-text report about an existing listing).
+export const SUBMISSION_KINDS = ["new", "edit", "correction"] as const;
 export type SubmissionKind = (typeof SUBMISSION_KINDS)[number];
 
 export const SUBMISSION_STATUSES = ["pending", "approved", "rejected"] as const;
 export type SubmissionStatus = (typeof SUBMISSION_STATUSES)[number];
 
-// The editable shape of a resource — what a submission's payload carries.
+// The editable shape of a resource — what a "new"/"edit" submission carries.
 export type ResourcePayload = {
   name: string;
   type: string | null;
@@ -165,6 +167,16 @@ export type ResourcePayload = {
   languages: string[];
 };
 
+// What a "correction" submission carries — a report about an existing listing.
+export type CorrectionPayload = {
+  resourceName: string;
+  resourceUrl: string | null;
+  correctionType: string;
+  details: string;
+};
+
+export type SubmissionPayload = ResourcePayload | CorrectionPayload;
+
 export const submissions = pgTable(
   "submissions",
   {
@@ -174,11 +186,15 @@ export const submissions = pgTable(
     resourceId: text("resource_id").references(() => resources.id, {
       onDelete: "cascade",
     }),
-    payload: jsonb("payload").$type<ResourcePayload>().notNull(),
-    submittedBy: text("submitted_by")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    submitterRole: text("submitter_role").$type<Role>().notNull(),
+    payload: jsonb("payload").$type<SubmissionPayload>().notNull(),
+    // Null for anonymous public submissions (correction / business-listing
+    // forms). Set for volunteer/business account submissions.
+    submittedBy: text("submitted_by").references(() => users.id, {
+      onDelete: "cascade",
+    }),
+    submitterRole: text("submitter_role").$type<Role>(),
+    // Free-text contact left by an anonymous submitter, e.g. "Jane <j@x.com>".
+    submitterContact: text("submitter_contact"),
     status: text("status")
       .$type<SubmissionStatus>()
       .notNull()

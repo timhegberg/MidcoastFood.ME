@@ -38,11 +38,18 @@ export type FieldSpec =
       helpText?: string;
     };
 
+type SubmitAction = (
+  formName: string,
+  fd: FormData,
+) => Promise<{ ok: true } | { ok: false; error: string }>;
+
 type Props = {
   formName: string;
   fields: FieldSpec[];
   submitLabel?: string;
   successMessage?: string;
+  // Defaults to emailing the submission; pass a queue action to override.
+  action?: SubmitAction;
 };
 
 export default function IntakeForm({
@@ -50,6 +57,7 @@ export default function IntakeForm({
   fields,
   submitLabel = "Submit",
   successMessage = "Thank you! Your submission has been received.",
+  action,
 }: Props) {
   const [state, setState] = useState<"idle" | "submitting" | "ok" | "error">(
     "idle",
@@ -61,7 +69,7 @@ export default function IntakeForm({
     setState("submitting");
     setErrorMsg(null);
     const fd = new FormData(e.currentTarget);
-    const result = await submitForm(formName, fd);
+    const result = await (action ?? submitForm)(formName, fd);
     if (result.ok) {
       setState("ok");
     } else {

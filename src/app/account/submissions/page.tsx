@@ -45,7 +45,8 @@ export default async function MySubmissionsPage() {
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <p className="font-display text-base font-semibold">
-                    {s.payload.name || "Untitled listing"}
+                    {("name" in s.payload && s.payload.name) ||
+                      "Untitled listing"}
                   </p>
                   <p className="mt-0.5 text-xs text-brand-ink/55">
                     {s.kind === "new" ? "New listing" : "Edit to a listing"} ·

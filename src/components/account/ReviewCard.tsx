@@ -6,14 +6,19 @@ import {
   approveSubmissionAction,
   rejectSubmissionAction,
 } from "@/lib/listing-actions";
-import type { ResourcePayload } from "@/db/schema";
+import type {
+  ResourcePayload,
+  CorrectionPayload,
+  SubmissionPayload,
+} from "@/db/schema";
 
 type Props = {
   id: number;
-  kind: "new" | "edit";
-  payload: ResourcePayload;
-  submitter: string;
-  submitterRole: string;
+  kind: "new" | "edit" | "correction";
+  payload: SubmissionPayload;
+  submitter: string | null;
+  submitterRole: string | null;
+  submitterContact: string | null;
   createdAt: string;
   resourceSlug: string | null;
 };
@@ -24,6 +29,7 @@ export default function ReviewCard({
   payload,
   submitter,
   submitterRole,
+  submitterContact,
   createdAt,
   resourceSlug,
 }: Props) {
@@ -33,6 +39,11 @@ export default function ReviewCard({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rejecting, setRejecting] = useState(false);
+
+  const isCorrection = kind === "correction";
+  const title = isCorrection
+    ? (payload as CorrectionPayload).resourceName
+    : (payload as ResourcePayload).name;
 
   async function approve() {
     setBusy(true);
@@ -58,6 +69,16 @@ export default function ReviewCard({
   }
 
   if (outcome !== "open") {
+    const word =
+      outcome === "rejected"
+        ? isCorrection
+          ? "dismissed."
+          : "rejected."
+        : isCorrection
+          ? "marked resolved."
+          : kind === "new"
+            ? "approved and published."
+            : "approved.";
     return (
       <li
         className={`rounded-2xl border p-4 text-sm ${
@@ -66,12 +87,163 @@ export default function ReviewCard({
             : "border-brand-accent/30 bg-brand-accent/5 text-brand-accent"
         }`}
       >
-        <span className="font-medium">{payload.name}</span> —{" "}
-        {outcome === "approved" ? "approved and published." : "rejected."}
+        <span className="font-medium">{title}</span> — {word}
       </li>
     );
   }
 
+  const kindLabel = {
+    new: "New listing",
+    edit: "Edit",
+    correction: "Correction",
+  }[kind];
+
+  return (
+    <li className="rounded-2xl border border-brand-rule bg-white p-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <span
+          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+            isCorrection
+              ? "bg-brand-accent/10 text-brand-accent"
+              : "bg-brand-cream text-brand-navy"
+          }`}
+        >
+          {kindLabel}
+        </span>
+        {submitterRole && (
+          <span className="rounded-full bg-brand-cream px-2 py-0.5 text-xs font-medium capitalize text-brand-ink/70">
+            {submitterRole}
+          </span>
+        )}
+      </div>
+
+      <h3 className="mt-2 font-display text-lg font-semibold">{title}</h3>
+      <p className="text-xs text-brand-ink/55">
+        {submitter ? `by ${submitter}` : "public submission"} ·{" "}
+        {new Date(createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })}
+        {kind === "edit" && resourceSlug && (
+          <>
+            {" · "}
+            <Link
+              href={`/resources/${resourceSlug}`}
+              target="_blank"
+              className="text-brand-navy underline"
+            >
+              view current listing
+            </Link>
+          </>
+        )}
+      </p>
+      {submitterContact && (
+        <p className="mt-0.5 text-xs text-brand-ink/55">
+          Contact: {submitterContact}
+        </p>
+      )}
+
+      {isCorrection ? (
+        <CorrectionBody payload={payload as CorrectionPayload} />
+      ) : (
+        <ResourceBody payload={payload as ResourcePayload} />
+      )}
+
+      {error && (
+        <p className="mt-3 rounded-lg border border-brand-accent/30 bg-brand-accent/5 px-3 py-2 text-sm text-brand-accent">
+          {error}
+        </p>
+      )}
+
+      {rejecting ? (
+        <form onSubmit={reject} className="mt-4 space-y-2">
+          <textarea
+            name="reviewNote"
+            rows={2}
+            placeholder={
+              isCorrection
+                ? "Optional note about why this is being dismissed"
+                : "Why is this being rejected? (shown to the submitter)"
+            }
+            className="w-full rounded-xl border border-brand-rule bg-white px-3 py-2 text-sm outline-none focus:border-brand-navy"
+          />
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={busy}
+              className="rounded-full bg-brand-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+            >
+              {isCorrection ? "Confirm dismiss" : "Confirm reject"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setRejecting(false)}
+              className="rounded-full border border-brand-rule px-4 py-2 text-sm font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={approve}
+            disabled={busy}
+            className="rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+          >
+            {busy
+              ? "Working…"
+              : isCorrection
+                ? "Mark resolved"
+                : kind === "new"
+                  ? "Approve & publish"
+                  : "Approve changes"}
+          </button>
+          {isCorrection && resourceSlugFromPayload(payload) && (
+            <Link
+              href={resourceSlugFromPayload(payload)!}
+              target="_blank"
+              className="rounded-full border border-brand-rule px-4 py-2 text-sm font-medium hover:bg-brand-cream"
+            >
+              Open listing
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={() => setRejecting(true)}
+            disabled={busy}
+            className="rounded-full border border-brand-rule px-4 py-2 text-sm font-medium hover:bg-brand-cream"
+          >
+            {isCorrection ? "Dismiss" : "Reject"}
+          </button>
+        </div>
+      )}
+    </li>
+  );
+}
+
+// If the correction reporter pasted a listing URL, surface it as a link.
+function resourceSlugFromPayload(p: SubmissionPayload): string | null {
+  const url = (p as CorrectionPayload).resourceUrl;
+  return url && url.trim() ? url.trim() : null;
+}
+
+function CorrectionBody({ payload }: { payload: CorrectionPayload }) {
+  return (
+    <div className="mt-3 space-y-2 text-sm">
+      <p>
+        <span className="text-brand-ink/55">What&apos;s wrong: </span>
+        <span className="font-medium">{payload.correctionType}</span>
+      </p>
+      <p className="rounded-lg bg-brand-cream/50 px-3 py-2 text-brand-ink/80">
+        {payload.details}
+      </p>
+    </div>
+  );
+}
+
+function ResourceBody({ payload }: { payload: ResourcePayload }) {
   const amenities = Object.entries(payload.amenities)
     .filter(([, v]) => v)
     .map(([k]) => k);
@@ -80,42 +252,7 @@ export default function ReviewCard({
     .map(([k]) => k);
 
   return (
-    <li className="rounded-2xl border border-brand-rule bg-white p-5">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-brand-cream px-2 py-0.5 text-xs font-medium text-brand-navy">
-              {kind === "new" ? "New listing" : "Edit"}
-            </span>
-            <span className="rounded-full bg-brand-cream px-2 py-0.5 text-xs font-medium capitalize text-brand-ink/70">
-              {submitterRole}
-            </span>
-          </div>
-          <h3 className="mt-2 font-display text-lg font-semibold">
-            {payload.name}
-          </h3>
-          <p className="text-xs text-brand-ink/55">
-            by {submitter} ·{" "}
-            {new Date(createdAt).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}
-            {kind === "edit" && resourceSlug && (
-              <>
-                {" · "}
-                <Link
-                  href={`/resources/${resourceSlug}`}
-                  target="_blank"
-                  className="text-brand-navy underline"
-                >
-                  view current listing
-                </Link>
-              </>
-            )}
-          </p>
-        </div>
-      </div>
-
+    <>
       <dl className="mt-3 grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
         <Row label="Category" value={payload.category} />
         <Row label="Type" value={payload.type} />
@@ -145,59 +282,7 @@ export default function ReviewCard({
           {eligibility.length > 0 && `Eligibility: ${eligibility.join(", ")}.`}
         </p>
       )}
-
-      {error && (
-        <p className="mt-3 rounded-lg border border-brand-accent/30 bg-brand-accent/5 px-3 py-2 text-sm text-brand-accent">
-          {error}
-        </p>
-      )}
-
-      {rejecting ? (
-        <form onSubmit={reject} className="mt-4 space-y-2">
-          <textarea
-            name="reviewNote"
-            rows={2}
-            placeholder="Why is this being rejected? (shown to the submitter)"
-            className="w-full rounded-xl border border-brand-rule bg-white px-3 py-2 text-sm outline-none focus:border-brand-navy"
-          />
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              disabled={busy}
-              className="rounded-full bg-brand-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
-            >
-              Confirm reject
-            </button>
-            <button
-              type="button"
-              onClick={() => setRejecting(false)}
-              className="rounded-full border border-brand-rule px-4 py-2 text-sm font-medium"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      ) : (
-        <div className="mt-4 flex gap-2">
-          <button
-            type="button"
-            onClick={approve}
-            disabled={busy}
-            className="rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
-          >
-            {busy ? "Working…" : kind === "new" ? "Approve & publish" : "Approve changes"}
-          </button>
-          <button
-            type="button"
-            onClick={() => setRejecting(true)}
-            disabled={busy}
-            className="rounded-full border border-brand-rule px-4 py-2 text-sm font-medium hover:bg-brand-cream"
-          >
-            Reject
-          </button>
-        </div>
-      )}
-    </li>
+    </>
   );
 }
 

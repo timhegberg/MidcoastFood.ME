@@ -1,5 +1,6 @@
 import PageHero from "@/components/PageHero";
 import IntakeForm, { type FieldSpec } from "@/components/IntakeForm";
+import { submitBusinessListingAction } from "@/lib/intake-actions";
 
 export const metadata = {
   title: "List your business — Midcoast Food",
@@ -63,7 +64,13 @@ export default function ListBusinessPage() {
         body="Does your business have an ongoing program to help with food security in Maine? List it here so more people can know about it."
       />
       <section className="mx-auto max-w-2xl px-4 pb-24 sm:px-6">
-        <IntakeForm formName="list-your-business" fields={FIELDS} />
+        <IntakeForm
+          formName="list-your-business"
+          fields={FIELDS}
+          action={submitBusinessListingAction}
+          submitLabel="Submit for review"
+          successMessage="Thanks! Your business has been added to the review queue."
+        />
       </section>
     </>
   );

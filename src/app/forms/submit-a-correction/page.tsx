@@ -1,5 +1,6 @@
 import PageHero from "@/components/PageHero";
 import IntakeForm, { type FieldSpec } from "@/components/IntakeForm";
+import { submitCorrectionAction } from "@/lib/intake-actions";
 
 export const metadata = {
   title: "Submit a correction — Midcoast Food",
@@ -58,8 +59,9 @@ export default function CorrectionPage() {
         <IntakeForm
           formName="submit-a-correction"
           fields={FIELDS}
+          action={submitCorrectionAction}
           submitLabel="Send correction"
-          successMessage="Thanks — we'll review and update soon."
+          successMessage="Thanks — your correction is in the review queue."
         />
       </section>
     </>

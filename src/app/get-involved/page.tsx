@@ -14,8 +14,8 @@ const WAYS = [
     body:
       "Call pantries to verify hours, update addresses, transcribe info from physical bulletin boards. A few hours a week makes a huge difference.",
     cta: {
-      href: `mailto:${SITE.contactEmail}?subject=I%20want%20to%20volunteer`,
-      label: "Email to volunteer",
+      href: "/signup",
+      label: "Create a Volunteer Account",
     },
   },
   {
