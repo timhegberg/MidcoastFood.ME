@@ -55,7 +55,7 @@ export default async function CountyPage({
             ← All counties on the map
           </Link>
         </div>
-        <div className="grid gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {matches.length === 0 ? (
             <p className="rounded-2xl border border-dashed border-brand-rule bg-white p-10 text-center text-sm text-brand-ink/60">
               No resources listed in {county} County yet.

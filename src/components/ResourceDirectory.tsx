@@ -122,7 +122,7 @@ export default function ResourceDirectory({
       />
       <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
         <section className="min-h-0 overflow-y-auto px-4 pb-12 pt-4 sm:px-6">
-          <div className="mx-auto grid max-w-3xl gap-3">
+          <div className="mx-auto grid grid-cols-1 max-w-3xl gap-3">
             {filtered.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-brand-rule bg-white p-10 text-center">
                 <p className="font-display text-lg font-medium">

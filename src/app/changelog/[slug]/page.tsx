@@ -7,6 +7,7 @@ type Entry = {
   slug: string;
   publishedOn: string;
   changesHtml: string;
+  beta?: boolean;
 };
 
 const entries = changelogs as Entry[];
@@ -45,8 +46,13 @@ export default async function ChangelogEntryPage({
       >
         ← Back to changelog
       </Link>
-      <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+      <h1 className="mt-4 flex flex-wrap items-center gap-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
         {entry.name}
+        {entry.beta && (
+          <span className="rounded-full bg-brand-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
+            In beta
+          </span>
+        )}
       </h1>
       <p className="mt-2 text-sm text-brand-ink/60">
         Published{" "}

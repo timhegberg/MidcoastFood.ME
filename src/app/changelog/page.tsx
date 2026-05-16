@@ -13,7 +13,16 @@ type Entry = {
   slug: string;
   publishedOn: string;
   changesHtml: string;
+  beta?: boolean;
 };
+
+function BetaBadge() {
+  return (
+    <span className="rounded-full bg-brand-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+      In beta
+    </span>
+  );
+}
 
 export default function ChangelogPage() {
   const entries = (changelogs as Entry[]).sort((a, b) =>
@@ -36,12 +45,15 @@ export default function ChangelogPage() {
               className="rounded-2xl border border-brand-rule bg-white p-6 shadow-card"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <Link
-                  href={`/changelog/${e.slug}`}
-                  className="font-display text-xl font-semibold hover:text-brand-navy"
-                >
-                  {e.name}
-                </Link>
+                <span className="flex items-center gap-2">
+                  <Link
+                    href={`/changelog/${e.slug}`}
+                    className="font-display text-xl font-semibold hover:text-brand-navy"
+                  >
+                    {e.name}
+                  </Link>
+                  {e.beta && <BetaBadge />}
+                </span>
                 <time
                   dateTime={e.publishedOn}
                   className="text-xs text-brand-ink/55"
