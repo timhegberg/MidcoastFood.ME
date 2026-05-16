@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FOOTER_LINKS, NAV, SITE } from "@/lib/site";
+import BetaLink from "@/components/BetaLink";
 
 export default function SiteFooter() {
   return (
@@ -110,9 +111,12 @@ export default function SiteFooter() {
               .
             </span>
           </p>
-          <p>
-            {SITE.version} · {SITE.versionTag}
-          </p>
+          <div className="flex items-center gap-3">
+            <BetaLink />
+            <p>
+              {SITE.version} · {SITE.versionTag}
+            </p>
+          </div>
         </div>
       </div>
     </footer>
