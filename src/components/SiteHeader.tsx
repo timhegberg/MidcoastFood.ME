@@ -24,7 +24,14 @@ export default function SiteHeader() {
           />
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
-          {NAV.map((item) => {
+          {/* Primary CTA — leftmost, black pill */}
+          <Link
+            href="/resources"
+            className="mr-2 rounded-full bg-brand-navy px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-navy/90"
+          >
+            Find food
+          </Link>
+          {NAV.filter((item) => item.href !== "/resources").map((item) => {
             const active = pathname.startsWith(item.href);
             return (
               <Link
@@ -42,7 +49,7 @@ export default function SiteHeader() {
           })}
           <Link
             href="/forms/list-your-resource"
-            className="ml-1 rounded-full bg-brand-navy px-3.5 py-1.5 text-sm font-medium text-white hover:bg-brand-navy/90"
+            className="rounded-full px-3 py-1.5 text-sm font-medium text-brand-ink/75 transition hover:bg-brand-cream hover:text-brand-ink"
           >
             List a resource
           </Link>
@@ -66,7 +73,14 @@ export default function SiteHeader() {
       {open && (
         <div className="border-t border-brand-rule bg-brand-paper md:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
-            {NAV.map((item) => (
+            <Link
+              href="/resources"
+              onClick={() => setOpen(false)}
+              className="rounded-lg bg-brand-navy px-3 py-2 text-sm font-medium text-white"
+            >
+              Find food
+            </Link>
+            {NAV.filter((item) => item.href !== "/resources").map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -79,7 +93,7 @@ export default function SiteHeader() {
             <Link
               href="/forms/list-your-resource"
               onClick={() => setOpen(false)}
-              className="mt-1 rounded-lg bg-brand-navy px-3 py-2 text-sm font-medium text-white"
+              className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-brand-cream"
             >
               List a resource
             </Link>
