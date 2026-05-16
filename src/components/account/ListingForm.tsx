@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { submitListingAction } from "@/lib/listing-actions";
 import { counties, languages } from "@/lib/resources";
 import { CATEGORIES, CATEGORY_LABEL, AMENITY_LABEL } from "@/lib/types";
 import type { ResourcePayload } from "@/db/schema";
+import LocationPicker from "@/components/account/LocationPicker";
 
 const INPUT =
   "w-full rounded-xl border border-brand-rule bg-white px-3.5 py-2 text-sm outline-none placeholder:text-brand-ink/40 focus:border-brand-navy focus:ring-2 focus:ring-brand-navy/15";
@@ -34,6 +35,7 @@ export default function ListingForm({
 }: Props) {
   const [state, setState] = useState<"form" | "submitting" | "done">("form");
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -73,7 +75,7 @@ export default function ListingForm({
   const e = initial?.eligibility;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-7">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-7">
       {resourceId && <input type="hidden" name="resourceId" value={resourceId} />}
 
       <Section title="Basics">
@@ -159,29 +161,18 @@ export default function ListingForm({
             </select>
           </Field>
         </div>
-        <details className="rounded-xl border border-brand-rule bg-brand-cream/30 p-3">
-          <summary className="cursor-pointer text-sm font-medium text-brand-ink/75">
-            Map coordinates (optional)
-          </summary>
-          <p className="mt-2 text-xs text-brand-ink/55">
-            Leave blank and we'll look them up from the address. To set them
-            exactly, right-click the spot in Google Maps and copy the numbers.
-          </p>
-          <div className="mt-2 grid gap-3 sm:grid-cols-2">
-            <input
-              name="lat"
-              placeholder="Latitude"
-              defaultValue={initial?.lat || ""}
-              className={INPUT}
-            />
-            <input
-              name="lng"
-              placeholder="Longitude"
-              defaultValue={initial?.lng || ""}
-              className={INPUT}
+        <div>
+          <span className="text-sm font-medium text-brand-ink/85">
+            Map location
+          </span>
+          <div className="mt-1">
+            <LocationPicker
+              initialLat={initial?.lat}
+              initialLng={initial?.lng}
+              formRef={formRef}
             />
           </div>
-        </details>
+        </div>
       </Section>
 
       <Section title="Contact">

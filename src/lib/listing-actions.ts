@@ -12,6 +12,20 @@ import { geocodeAddress } from "@/lib/geocode";
 
 type Result = { ok: true } | { ok: false; error: string };
 
+// ── Geocoding (for the listing editor's map picker) ─────────────────────────
+// Wraps the server-side Nominatim lookup so the client can resolve an address
+// to coordinates. Requires a signed-in user so it isn't an open proxy.
+
+export async function geocodeAddressAction(
+  address: string,
+  city: string,
+  state: string,
+  zip: string,
+): Promise<{ lat: number; lng: number } | null> {
+  await requireUser();
+  return geocodeAddress({ address, city, state, zip });
+}
+
 function slugify(name: string): string {
   return name
     .toLowerCase()
