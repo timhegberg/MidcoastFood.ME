@@ -24,14 +24,19 @@ export default function SiteHeader() {
           />
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
-          {/* Primary CTA — leftmost, black pill */}
-          <Link
-            href="/resources"
-            className="mr-2 rounded-full bg-brand-navy px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-navy/90"
-          >
-            Find food
-          </Link>
-          {NAV.filter((item) => item.href !== "/resources").map((item) => {
+          {NAV.map((item) => {
+            // Find food — prominent, underlined primary CTA.
+            if (item.href === "/resources") {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="mr-1 rounded-full bg-brand-navy px-5 py-2 text-[15px] font-semibold text-white underline decoration-2 underline-offset-4 hover:bg-brand-navy/90"
+                >
+                  {item.label}
+                </Link>
+              );
+            }
             const active = pathname.startsWith(item.href);
             return (
               <Link
@@ -47,12 +52,6 @@ export default function SiteHeader() {
               </Link>
             );
           })}
-          <Link
-            href="/forms/list-your-resource"
-            className="rounded-full px-3 py-1.5 text-sm font-medium text-brand-ink/75 transition hover:bg-brand-cream hover:text-brand-ink"
-          >
-            List a resource
-          </Link>
         </nav>
 
         <button
@@ -73,30 +72,27 @@ export default function SiteHeader() {
       {open && (
         <div className="border-t border-brand-rule bg-brand-paper md:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
-            <Link
-              href="/resources"
-              onClick={() => setOpen(false)}
-              className="rounded-lg bg-brand-navy px-3 py-2 text-sm font-medium text-white"
-            >
-              Find food
-            </Link>
-            {NAV.filter((item) => item.href !== "/resources").map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-brand-cream"
-              >
-                {item.label}
-              </Link>
-            ))}
-            <Link
-              href="/forms/list-your-resource"
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-brand-cream"
-            >
-              List a resource
-            </Link>
+            {NAV.map((item) =>
+              item.href === "/resources" ? (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg bg-brand-navy px-3 py-2.5 text-[15px] font-semibold text-white underline decoration-2 underline-offset-4"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-brand-cream"
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
           </nav>
         </div>
       )}
