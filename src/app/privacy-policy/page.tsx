@@ -1,4 +1,5 @@
 import PageHero from "@/components/PageHero";
+import AnalyticsOptOut from "@/components/AnalyticsOptOut";
 import { SITE } from "@/lib/site";
 
 export const metadata = {
@@ -65,10 +66,16 @@ export default function PrivacyPage() {
 
         <Section title="Cookies & analytics">
           <p>
-            MidcoastFood.ME uses privacy-respecting analytics with IP
-            anonymization enabled. Your IP address is shortened before being
-            stored, and no personally identifying data is ever saved.
+            MidcoastFood.ME uses privacy-respecting analytics, including Google
+            Analytics, to understand which pages are most useful. We never sell
+            this data or use it to identify you.
           </p>
+          <p>
+            You can turn analytics off for this browser at any time — your
+            choice is remembered locally and no data is sent while it&apos;s
+            off.
+          </p>
+          <AnalyticsOptOut />
         </Section>
 
         <Section title="Data storage">
