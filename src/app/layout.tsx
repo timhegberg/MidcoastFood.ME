@@ -1,5 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import SiteHeader from "@/components/SiteHeader";
 import FooterGate from "@/components/FooterGate";
 
@@ -17,6 +19,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <FooterGate />
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
